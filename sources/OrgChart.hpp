@@ -8,24 +8,24 @@
 using namespace std;
 namespace ariel{
     class OrgChart{
-		public:
-        struct Node {
-		string& data;
-		vector<Node*>* next_level;
-		Node(string& s, vector<Node*>* n) : data(s), next_level(n) {
+
+        public:
+
+		struct Node {
+			string& data;
+			Node * next;
+			// vector<Node*>* next_level;
+			explicit Node(string& s, Node* next) : data(s), next(next) {
 		    }
 	    };
 
         Node* root;
-
         public:
 
-
-
-        OrgChart() : root(nullptr){};
-        OrgChart(OrgChart& other){
-            this->root = other.root;
-        }
+        OrgChart():root(nullptr){}
+        // OrgChart(OrgChart& other){
+        //     this->root = other.root;
+        // }
         ~OrgChart(){
             remove();
         }
@@ -38,16 +38,18 @@ namespace ariel{
 	    }
         void remove() {
 			Node* tmp = root;
-		    // root = root->next_level;
-		    for (uint i = 0 ; i <tmp->next_level->size(); i++) {
-                delete tmp->next_level->at(i);
-            }
+		    // // root = root->next_level;
+		    // for (uint i = 0 ; i <tmp->next_level->size(); i++) {
+            //     delete tmp->next_level->at(i);
+            // }
 	    }  
 
-        OrgChart add_root(const string&){
+        OrgChart& add_root(const string& name){
+			// this->root->next->data = name;
+			// this->root->next->next = nullptr;
 			return *this;
 		}
-        OrgChart add_sub(const string& ,const string&){
+        OrgChart& add_sub(const string& ,const string&){
 			return *this;
 		}
 
@@ -60,18 +62,17 @@ namespace ariel{
 
 	  private:
 		Node* current_node;
-		vector<Node*>* current_level;
+		// vector<Node*>* current_level;
 	public:
 
-        OrgChart& operator=(OrgChart& other);
-        bool operator==(OrgChart& other);
-        bool operator!=(OrgChart& other);
+		explicit iterator(Node* ptr = nullptr)
+			: current_node(ptr) {}
+        // OrgChart& operator=(OrgChart& other);
+        // bool operator==(OrgChart& other);
+        // bool operator!=(OrgChart& other);
         // OrgChart& operator*(OrgChart& other);
         // OrgChart& operator++(); // prefix
         // OrgChart operator++(int dummy); // postfix
-		iterator(Node* ptr = nullptr)
-			: current_node(ptr) {
-		}
 
 		// Note that the method is const as this operator does not
 		// allow changing of the iterator.
@@ -80,45 +81,39 @@ namespace ariel{
 		// and the method will still be const
 		string& operator*() const { ///////////////////////////////////////////
 			//return *current_node;
-			return current_node->data;
+			return this->current_node->data;
 		}
 
 		string* operator->() const {
 			return &(current_node->data);
 		}
 
-		// ++i;
 		iterator& operator++() {
-			//++current_node;
-			current_level = current_node->next_level;
+			current_node = current_node->next;
 			return *this;
 		}
 
-		// i++;
-		// Usually iterators are passed by value and not by const& as they are small.
-		const iterator operator++(int) {
+		iterator operator++(int) {  //
 			iterator tmp= *this;
-			current_level = current_node->next_level;
+			current_node = current_node->next;
 			return tmp;
 		}
 
-		bool operator==(const iterator& rhs) const {
-			return current_node == rhs.current_node;
+		bool operator==(const iterator& iter) const {
+			return current_node == iter.current_node;
 		}
 
-		bool operator!=(const iterator& rhs) const {
-			return current_node != rhs.current_node;
+		bool operator!=(const iterator& iter) const {
+			return current_node != iter.current_node;
 		}
 	};  // END OF CLASS ITERATOR
 
 	
 	iterator begin() {
-		// return &(m_first->m_value); 
 		return iterator{root};
 	}
 	
 	iterator end() {
-		// return nullptr; 
 		return iterator{nullptr};
 	}
 
