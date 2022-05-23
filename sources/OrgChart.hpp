@@ -12,9 +12,10 @@ namespace ariel{
         public:
 
 		struct Node {
-			string& data;
+			const string& name;
 			Node * next;
-			Node(string& s, Node* next) : data(s), next(next) {}
+			vector<Node*>* children;
+			Node(const string& name) : name(name) {}
 	    };
 
         Node* root;
@@ -24,9 +25,7 @@ namespace ariel{
         ~OrgChart(){
             remove();
         }
-		friend ostream& operator<< (ostream& output, const OrgChart& orgChart){
-			return output;
-		}
+		friend ostream& operator<< (ostream& output, const OrgChart& orgChart);
 
         bool empty() const {
 		    return root == nullptr;
@@ -35,12 +34,9 @@ namespace ariel{
 			Node* tmp = root;
 	    }  
 
-        OrgChart& add_root(const string& name){
-			return *this;
-		}
-        OrgChart& add_sub(const string& ,const string&){
-			return *this;
-		}
+        OrgChart& add_root(const string& name);
+
+        OrgChart& add_sub(const string& ,const string&);
 
 	class iterator {
 
@@ -52,12 +48,12 @@ namespace ariel{
 		iterator(Node* ptr = nullptr)
 			: current_node(ptr) {}
         
-		string& operator*() const { 
-			return this->current_node->data;
+		const string& operator*() const { 
+			return this->current_node->name;
 		}
 
-		string* operator->() const {
-			return &(current_node->data);
+		const string* operator->() const {
+			return &(current_node->name);
 		}
 
 		iterator& operator++() {
