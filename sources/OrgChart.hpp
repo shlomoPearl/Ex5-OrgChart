@@ -1,113 +1,101 @@
 #pragma once
+
 #include <iostream>
+#include <queue>
+#include <stack>
 #include <vector>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+const int LEVEL = 1;
+const int REVERSE = 2;
+const int PRE_ORDER = 3;
+
 using namespace std;
 namespace ariel{
     class OrgChart{
 
         public:
+		OrgChart& operator=(const OrgChart& rhs);
 
 		struct Node {
-			const string& name;
-			Node * next;
-			vector<Node*>* children;
-			Node(const string& name) : name(name) {}
+			string name;
+			int size;
+			vector<Node*>* children = new vector<Node*>();
+			Node* next = nullptr;
+			Node(){}
+			Node(string name):name(name) {
+				size = name.size();
+			}
+			Node(Node& other):name(other.name), size(other.size),children(other.children){}
 	    };
 
-        Node* root;
-        public:
+		
+        	Node* root;
+			int size = 0;
 
-        OrgChart():root(nullptr){}
-        ~OrgChart(){
-            remove();
-        }
+		OrgChart();
+        ~OrgChart(){}
 		friend ostream& operator<< (ostream& output, const OrgChart& orgChart);
 
-        bool empty() const {
-		    return root == nullptr;
-	    }
-        void remove() {
-			Node* tmp = root;
-	    }  
+        OrgChart& add_root(string);
 
-        OrgChart& add_root(const string& name);
+        OrgChart& add_sub(string ,string);
 
-        OrgChart& add_sub(const string& ,const string&);
+		void add_sub(Node*, string, string);  
 
-	class iterator {
+	class Iterator {
 
-	  private:
+	private:
+
+	  	int type;
 		Node* current_node;
-		// vector<Node*>* current_level;
+		queue<Node*>* q;
+		stack<Node*>* s;
+		
 	public:
 
-		iterator(Node* ptr = nullptr)
-			: current_node(ptr) {}
+		Iterator(int type ,Node* ptr);
+			
+		Iterator(Node* ptr) : current_node(ptr){}
+
+		void level();
+		void reverse();
+		void pre_order();
+		void pre_order(Node*); //recursive
         
-		const string& operator*() const { 
-			return this->current_node->name;
-		}
+		string& operator*() const; 
+		
+		string* operator->() const;
 
-		const string* operator->() const {
-			return &(current_node->name);
-		}
+		Iterator& operator++();
 
-		iterator& operator++() {
-			current_node = current_node->next;
-			return *this;
-		}
+		const Iterator operator++(int);
 
-		iterator operator++(int) {  //
-			iterator tmp= *this;
-			current_node = current_node->next;
-			return tmp;
-		}
+		bool operator==(const Iterator& iter)const;
 
-		bool operator==(const iterator& iter) const {
-			return current_node == iter.current_node;
-		}
-
-		bool operator!=(const iterator& iter) const {
-			return current_node != iter.current_node;
-		}
-	};  // END OF CLASS ITERATOR
+		bool operator!=(const Iterator& iter) const;
+	};  // end iterator class
 
 	
-	iterator begin() {
-		return iterator{root};
-	}
+	Iterator begin();
 	
-	iterator end() {
-		return iterator{nullptr};
-	}
-
-	iterator begin_level_order() {
-        return iterator{root};
-    }
-
-    iterator end_level_order() {
-        return iterator{nullptr};
-    }
-
-    iterator begin_reverse_order() {
-        return iterator{root};
-    }
-
-    iterator reverse_order() {
-        return iterator{nullptr};
-    }
-
-    iterator begin_preorder() {
-        return iterator{root};
-    }
-
-    iterator end_preorder() {
-        return iterator{nullptr};
-    }
 	
-    };
+	Iterator end();
+
+	Iterator begin_level_order();
+
+    Iterator end_level_order();
+
+    Iterator begin_reverse_order();
+
+    Iterator reverse_order();
+
+    Iterator begin_preorder();
+
+    Iterator end_preorder();
+	
+    }; // end of OrgChart class
 };
