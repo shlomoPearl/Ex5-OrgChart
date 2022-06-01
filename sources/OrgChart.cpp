@@ -21,6 +21,10 @@ namespace ariel{
             throw logic_error(father + "does not exist");
         }
         add_sub(root, father, child);
+        if (!this->exist) {
+            throw logic_error(father + "does not exist");
+        }
+        
         return *this;
     }
     void OrgChart::add_sub(Node* n, string father, string child){
@@ -28,6 +32,7 @@ namespace ariel{
             Node* new_node = new Node(child);
             // new_node.name = child;
             n->children->push_back(new_node);
+            this->exist = true;
             return;
         }
         for (uint son = 0; son < n->children->size(); son++) {
@@ -37,7 +42,7 @@ namespace ariel{
     }
 
     OrgChart::Iterator OrgChart::begin() {
-		return Iterator{root};
+		return Iterator{LEVEL, root};
 	}
 	
 	OrgChart::Iterator OrgChart::end() {

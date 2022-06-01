@@ -33,8 +33,9 @@ namespace ariel{
 	    };
 
 		
-        	Node* root;
-			int size = 0;
+		Node* root;
+		int size = 0;
+		bool exist = false;
 
 		OrgChart();
         ~OrgChart(){}
